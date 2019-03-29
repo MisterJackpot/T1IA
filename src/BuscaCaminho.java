@@ -7,18 +7,21 @@ public class BuscaCaminho {
     private int[][] maze;
     private int posXIni, posYIni;
     private int corte;
+    private int percentMutation;
 
-    public BuscaCaminho(int[][] maze, int posX, int posY){
+    public BuscaCaminho(int[][] maze, int posX, int posY, int corte, int percentMutation){
         this.maze = maze;
         posXIni = posX;
         posYIni = posY;
-        corte = 18;
+        this.corte = corte;
         agentSize = maze.length * maze[0].length;
+        this.percentMutation = percentMutation;
     }
 
     public Agent buscaGenetica(int numeroAgentes, int geracoes){
         pop = new Agent[numeroAgentes];
         popInt = new Agent[numeroAgentes];
+        Random r = new Random();
 
         initPop();
 
@@ -38,7 +41,7 @@ public class BuscaCaminho {
             getHighlander();
             crossOver();
 
-            if(geracao%2 == 0)mutate();
+            if(r.nextInt(101) > percentMutation) mutate();
 
             calculateAllScore(popInt);
 
@@ -104,9 +107,9 @@ public class BuscaCaminho {
 
             }
             if(posX<0 || posX>=maze[0].length || posY<0 || posY>=maze.length){
-                score += 100;
+                score += agentSize * 5;
             } else if(maze[posY][posX] == 1){
-                score += 10;
+                score += agentSize * 2;
             } else if(maze[posY][posX] == 0 || maze[posY][posX] == 2){
                 score += 1;
             } else {

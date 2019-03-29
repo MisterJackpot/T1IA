@@ -2,6 +2,8 @@ import java.io.File;
 import java.io.IOException;
 
 public class Main {
+    public static final int posx = 4;
+    public static final int posy = 0;
 
     public static void main(String args[]){
         File f = new File("assets/maza.txt");
@@ -10,11 +12,11 @@ public class Main {
            int[][] maze =  p.parseFile(f);
            printMaze(maze);
 
-            BuscaCaminho busca = new BuscaCaminho(maze,0,0);
+            BuscaCaminho busca = new BuscaCaminho(maze,posx,posy, 35, 75);
 
             Agent champ = new Agent(36);
             do {
-                champ = busca.buscaGenetica(21, 10000);
+                champ = busca.buscaGenetica(35, 100000);
                 System.out.println("Champ:");
                 printAgent(champ);
                 System.out.println(" Score: " + champ.getScore());
@@ -35,8 +37,8 @@ public class Main {
     }
 
     public static void printSteps(Agent agent, int[][] maze){
-        int posX = 0;
-        int posY = 0;
+        int posX = posx;
+        int posY = posy;
 
         for (int i = 0; i < agent.getTrajSize(); i++) {
             maze[posY][posX] = 9;
@@ -57,9 +59,10 @@ public class Main {
 
 
             System.out.println("_-_-__-_-__-_-__-_-__-_-__-_-__-_-__-_-__-_-__-_-__-_-_");
+            System.out.println("Passo: " + i);
             printMaze(maze);
             try {
-                Thread.sleep(3000);
+                Thread.sleep(1500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -72,8 +75,8 @@ public class Main {
     }
 
     public static boolean verify(Agent agent, int[][] maze) {
-        int posX = 0;
-        int posY = 0;
+        int posX = posx;
+        int posY = posy;
 
         for (int i = 0; i < agent.getTrajSize(); i++) {
             switch (agent.getCommand(i)) {

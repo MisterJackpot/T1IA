@@ -1,7 +1,7 @@
 import java.util.Random;
 
 public class BuscaCaminho {
-
+    private int agentSize;
     private Agent[] pop;
     private Agent[] popInt;
     private int[][] maze;
@@ -13,6 +13,7 @@ public class BuscaCaminho {
         posXIni = posX;
         posYIni = posY;
         corte = 18;
+        agentSize = maze.length * maze[0].length;
     }
 
     public Agent buscaGenetica(int numeroAgentes, int geracoes){
@@ -28,7 +29,7 @@ public class BuscaCaminho {
 
         for (int geracao = 0; geracao <= geracoes; geracao++) {
             for (int i = 0; i < popInt.length; i++) {
-                popInt[i] = new Agent(36);
+                popInt[i] = new Agent(agentSize);
             }
             //System.out.println("Geraçao:" + geracao);
 
@@ -66,7 +67,7 @@ public class BuscaCaminho {
     public void initPop(){
         Random r = new Random();
         for(int i = 0; i < pop.length; i++){
-            Agent aux = new Agent(36);
+            Agent aux = new Agent(agentSize);
             pop[i] = aux;
             for(int j = 0; j < pop[i].getTrajSize(); j++){
                 pop[i].addCommand(j,r.nextInt(4));

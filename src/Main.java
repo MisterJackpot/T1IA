@@ -17,6 +17,7 @@ public class Main {
                 champ = busca.buscaGenetica(21, 10000);
                 System.out.println("Champ:");
                 printAgent(champ);
+                System.out.println(" Score: " + champ.getScore());
             }while(!verify(champ,maze));
 
             printSteps(champ,maze);

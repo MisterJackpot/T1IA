@@ -1,24 +1,73 @@
 import java.util.Random;
 
-public class buscaCaminho {
+public class BuscaCaminho {
 
     private Agent[] pop;
     private Agent[] popInt;
     private int[][] maze;
     private int posXIni, posYIni;
+    private int corte;
 
-    public buscaCaminho(int[][] maze,int posX, int posY){
+    public BuscaCaminho(int[][] maze, int posX, int posY){
         this.maze = maze;
         posXIni = posX;
         posYIni = posY;
+        corte = 18;
+    }
+
+    public Agent buscaGenetica(int numeroAgentes, int geracoes){
+        pop = new Agent[numeroAgentes];
+        popInt = new Agent[numeroAgentes];
+
+        initPop();
+
+        /*System.out.println("______________________________________________");
+        System.out.println("Primeiros Agentes:");
+        printAgents(pop);
+        System.out.println("______________________________________________");*/
+
+        for (int geracao = 0; geracao <= geracoes; geracao++) {
+            for (int i = 0; i < popInt.length; i++) {
+                popInt[i] = new Agent(36);
+            }
+            //System.out.println("Geraçao:" + geracao);
+
+            calculateAllScore(pop);
+
+            getHighlander();
+            crossOver();
+
+            if(geracao%2 == 0)mutate();
+
+            calculateAllScore(popInt);
+
+            //System.out.println("pop:");
+            //printAgents(pop);
+            //System.out.println("popInt:");
+            //printAgents(popInt);
+
+            pop = popInt.clone();
+        }
+
+        return pop[0];
     }
 
 
+    public void printAgents(Agent[] a){
+        for (int i = 0; i < a.length; i++) {
+            for (int j = 0; j < a[i].getTrajSize(); j++) {
+                System.out.print(a[i].getCommand(j));
+            }
+            System.out.print(" Score: " + a[i].getScore());
+            System.out.println(" ");
+        }
+    }
 
     public void initPop(){
         Random r = new Random();
         for(int i = 0; i < pop.length; i++){
             Agent aux = new Agent(36);
+            pop[i] = aux;
             for(int j = 0; j < pop[i].getTrajSize(); j++){
                 pop[i].addCommand(j,r.nextInt(4));
             }
@@ -53,11 +102,11 @@ public class buscaCaminho {
                     break;
 
             }
-            if(posX<0 || posX>=maze[0].length || posY<0 || posY>maze.length){
-                score += 200;
-            } else if(maze[posX][posY] == 1){
-                score += 200;
-            } else if(maze[posX][posY] == 0){
+            if(posX<0 || posX>=maze[0].length || posY<0 || posY>=maze.length){
+                score += 100;
+            } else if(maze[posY][posX] == 1){
+                score += 10;
+            } else if(maze[posY][posX] == 0 || maze[posY][posX] == 2){
                 score += 1;
             } else {
                 chegou = i;
@@ -104,19 +153,17 @@ public class buscaCaminho {
     public void crossOver(){
         Agent dad;
         Agent mom;
-        int corte = 18;
 
         for(int i = 1; i < popInt.length; i = i + 2){
             do{
                 dad = torneio();
                 mom = torneio();
             }while(dad.equals(mom));
-
             for (int j = 0; j < corte; j++) {
                 popInt[i].addCommand(j,dad.getCommand(j));
                 popInt[i+1].addCommand(j,mom.getCommand(j));
             }
-            for (int j = corte; j < popInt.length; j++) {
+            for (int j = corte; j < popInt[i].getTrajSize(); j++) {
                 popInt[i].addCommand(j,mom.getCommand(j));
                 popInt[i+1].addCommand(j,dad.getCommand(j));
             }
@@ -125,26 +172,26 @@ public class buscaCaminho {
 
     public void mutate(){
         Random r = new Random();
+        for (int i = 0; i < 5; i++) {
+            int l = r.nextInt(popInt.length-1)+1;
+            int c = r.nextInt(popInt[l].getTrajSize());
 
-        int l = r.nextInt(popInt.length);
-        int c = r.nextInt(popInt[l].getTrajSize());
-
-        switch (popInt[l].getCommand(c)){
-            case 0:
-                popInt[l].addCommand(c,1);
-                break;
-            case 1:
-                popInt[l].addCommand(c,2);
-                break;
-            case 2:
-                popInt[l].addCommand(c,3);
-                break;
-            case 3:
-                popInt[l].addCommand(c,0);
-                break;
+            switch (popInt[l].getCommand(c)) {
+                case 0:
+                    popInt[l].addCommand(c, 1);
+                    break;
+                case 1:
+                    popInt[l].addCommand(c, 2);
+                    break;
+                case 2:
+                    popInt[l].addCommand(c, 3);
+                    break;
+                case 3:
+                    popInt[l].addCommand(c, 0);
+                    break;
+            }
         }
     }
-
 
 
 }

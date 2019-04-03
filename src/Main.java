@@ -29,7 +29,7 @@ public class Main {
 
             Agent champ = new Agent(36);
             do {
-                champ = busca.buscaGenetica(11, 1000000);
+                champ = busca.buscaGenetica(15, 1000000);
                 System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 System.out.println("Champ:");
                 printAgent(champ);

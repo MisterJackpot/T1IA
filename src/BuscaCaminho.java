@@ -153,8 +153,11 @@ public class BuscaCaminho {
             agent.sliceTraj(chegou);
         }*/
 
-
-        agent.setScore(score);
+        if(agent.getBatida() != -1) {
+            agent.setScore(score / (agent.getBatida()+1));
+        }else{
+            agent.setScore(score/(agentSize*10));
+        }
 
     }
 
@@ -208,7 +211,7 @@ public class BuscaCaminho {
 
     public void mutate(int chegada){
         Random r = new Random();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < pop.length/5; i++) {
             int l = r.nextInt(popInt.length-1)+1;
             for (int j = chegada; j < popInt[l].getTrajSize(); j++) {
                 popInt[l].addCommand(j, r.nextInt(4));

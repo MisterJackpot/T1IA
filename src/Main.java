@@ -2,8 +2,8 @@ import java.io.File;
 import java.io.IOException;
 
 public class Main {
-    public static final int posx = 0;
-    public static final int posy = 0;
+    public static  int posx = 0;
+    public static  int posy = 0;
 
     public static void main(String args[]){
         File f = new File("assets/maza.txt");
@@ -17,15 +17,19 @@ public class Main {
             for (int i = 0; i < maze.length; i++) {
                 for (int j = 0; j < maze[i].length; j++) {
                     if(maze[i][j] == 0) numberZeros++;
+                    else if(maze[i][j] == 2){
+                        posy = i;
+                        posx = j;
+                    }
                 }
 
             }
 
-            BuscaCaminho busca = new BuscaCaminho(maze,posx,posy, 20, 80,numberZeros);
+            BuscaCaminho busca = new BuscaCaminho(maze,posx,posy, 10, 100,numberZeros*2);
 
             Agent champ = new Agent(36);
             do {
-                champ = busca.buscaGenetica(51, 100000);
+                champ = busca.buscaGenetica(11, 1000000);
                 System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 System.out.println("Champ:");
                 printAgent(champ);

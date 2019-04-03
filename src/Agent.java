@@ -5,6 +5,7 @@ public class Agent {
     private boolean invalido;
     private boolean chegou;
     private int chegada;
+    private int batida;
 
     public Agent(int size){
         traj = new int[size];
@@ -61,5 +62,13 @@ public class Agent {
 
     public void setChegada(int chegada) {
         this.chegada = chegada;
+    }
+
+    public int getBatida() {
+        return batida;
+    }
+
+    public void setBatida(int batida) {
+        this.batida = batida;
     }
 }

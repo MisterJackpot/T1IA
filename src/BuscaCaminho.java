@@ -34,7 +34,7 @@ public class BuscaCaminho {
             for (int i = 0; i < popInt.length; i++) {
                 popInt[i] = new Agent(agentSize);
             }
-            System.out.println("Geraçao:" + geracao);
+            //System.out.println("Geraçao:" + geracao);
 
             calculateAllScore(pop);
 
@@ -42,7 +42,10 @@ public class BuscaCaminho {
             crossOver();
 
             if(r.nextInt(101) < percentMutation) {
-                if(pop[0].getChegada() > 0) mutate(pop[0].getChegada());
+                if(pop[0].getChegada() > 0){
+                    mutate(pop[0].getChegada());
+                    this.corte = pop[0].getChegada()/2;
+                }
                 else mutate(agentSize/2);
             }
             calculateAllScore(popInt);
@@ -53,8 +56,8 @@ public class BuscaCaminho {
 
             pop = popInt.clone();
 
-            System.out.println("pop:");
-            printAgents(pop);
+            /*System.out.println("pop:");
+            printAgents(pop);*/
 
             if(pop[0].isChegou() && !pop[0].isInvalido()){
                 break;
@@ -194,9 +197,9 @@ public class BuscaCaminho {
 
     public void mutate(int chegada){
         Random r = new Random();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 10; i++) {
             int l = r.nextInt(popInt.length-1)+1;
-            for (int j = 0; j < 3; j++) {
+            for (int j = 0; j < 2; j++) {
                 int c = r.nextInt(chegada);
 
                 popInt[l].addCommand(c, r.nextInt(4));

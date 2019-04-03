@@ -25,7 +25,7 @@ public class Main {
 
             Agent champ = new Agent(36);
             do {
-                champ = busca.buscaGenetica(51, 1000000);
+                champ = busca.buscaGenetica(51, 100000);
                 System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 System.out.println("Champ:");
                 printAgent(champ);

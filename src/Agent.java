@@ -2,9 +2,13 @@ public class Agent {
 
     private int[] traj;
     private int score;
+    private boolean invalido;
+    private boolean chegou;
+    private int chegada;
 
     public Agent(int size){
         traj = new int[size];
+        chegada = -1;
     }
 
     public int getTrajSize(){
@@ -35,4 +39,27 @@ public class Agent {
         return score;
     }
 
+    public boolean isInvalido() {
+        return invalido;
+    }
+
+    public void setInvalido(boolean invalido) {
+        this.invalido = invalido;
+    }
+
+    public boolean isChegou() {
+        return chegou;
+    }
+
+    public void setChegou(boolean chegou) {
+        this.chegou = chegou;
+    }
+
+    public int getChegada() {
+        return chegada;
+    }
+
+    public void setChegada(int chegada) {
+        this.chegada = chegada;
+    }
 }

@@ -2,7 +2,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class Main {
-    public static final int posx = 4;
+    public static final int posx = 0;
     public static final int posy = 0;
 
     public static void main(String args[]){
@@ -12,14 +12,25 @@ public class Main {
            int[][] maze =  p.parseFile(f);
            printMaze(maze);
 
-            BuscaCaminho busca = new BuscaCaminho(maze,posx,posy, 35, 75);
+           int numberZeros = 0;
+
+            for (int i = 0; i < maze.length; i++) {
+                for (int j = 0; j < maze[i].length; j++) {
+                    if(maze[i][j] == 0) numberZeros++;
+                }
+
+            }
+
+            BuscaCaminho busca = new BuscaCaminho(maze,posx,posy, 20, 80,numberZeros);
 
             Agent champ = new Agent(36);
             do {
-                champ = busca.buscaGenetica(35, 100000);
+                champ = busca.buscaGenetica(51, 1000000);
+                System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 System.out.println("Champ:");
                 printAgent(champ);
                 System.out.println(" Score: " + champ.getScore());
+                System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             }while(!verify(champ,maze));
 
             printSteps(champ,maze);
@@ -108,7 +119,11 @@ public class Main {
     public static void printMaze(int[][] maze){
         for (int i = 0; i < maze.length; i++) {
             for (int j = 0; j < maze[i].length; j++) {
-                System.out.print(maze[i][j]);
+                if(maze[i][j] == 0) {
+                    System.out.print(" ");
+                }else{
+                        System.out.print(maze[i][j]);
+                }
             }
             System.out.println(" ");
         }

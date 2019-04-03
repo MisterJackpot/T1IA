@@ -9,12 +9,12 @@ public class BuscaCaminho {
     private int corte;
     private int percentMutation;
 
-    public BuscaCaminho(int[][] maze, int posX, int posY, int corte, int percentMutation){
+    public BuscaCaminho(int[][] maze, int posX, int posY, int corte, int percentMutation, int size){
         this.maze = maze;
         posXIni = posX;
         posYIni = posY;
         this.corte = corte;
-        agentSize = maze.length * maze[0].length;
+        agentSize = size;
         this.percentMutation = percentMutation;
     }
 
@@ -34,26 +34,40 @@ public class BuscaCaminho {
             for (int i = 0; i < popInt.length; i++) {
                 popInt[i] = new Agent(agentSize);
             }
-            //System.out.println("Geraçao:" + geracao);
+            System.out.println("Geraçao:" + geracao);
 
             calculateAllScore(pop);
 
             getHighlander();
             crossOver();
 
-            if(r.nextInt(101) > percentMutation) mutate();
-
+            if(r.nextInt(101) < percentMutation) {
+                if(pop[0].getChegada() > 0) mutate(pop[0].getChegada());
+                else mutate(agentSize/2);
+            }
             calculateAllScore(popInt);
 
-            //System.out.println("pop:");
-            //printAgents(pop);
+
             //System.out.println("popInt:");
             //printAgents(popInt);
 
             pop = popInt.clone();
+
+            System.out.println("pop:");
+            printAgents(pop);
+
+            if(pop[0].isChegou() && !pop[0].isInvalido()){
+                break;
+            }
         }
 
         return pop[0];
+    }
+
+    public static void printAgent(Agent agent){
+        for (int i = 0; i < agent.getTrajSize(); i++) {
+            System.out.print(agent.getCommand(i));
+        }
     }
 
 
@@ -88,7 +102,8 @@ public class BuscaCaminho {
         int score = 0;
         int posX = posXIni;
         int posY = posYIni;
-        int chegou = -1;
+        agent.setInvalido(false);
+        agent.setChegou(false);
 
         for (int i = 0; i < agent.getTrajSize(); i++){
             switch (agent.getCommand(i)){
@@ -107,13 +122,16 @@ public class BuscaCaminho {
 
             }
             if(posX<0 || posX>=maze[0].length || posY<0 || posY>=maze.length){
-                score += agentSize * 5;
+                score += agentSize * 10;
+                agent.setInvalido(true);
             } else if(maze[posY][posX] == 1){
-                score += agentSize * 2;
+                score += agentSize * 5;
+                agent.setInvalido(true);
             } else if(maze[posY][posX] == 0 || maze[posY][posX] == 2){
                 score += 1;
             } else {
-                chegou = i;
+                agent.setChegou(true);
+                agent.setChegada(i);
                 break;
             }
         }
@@ -174,13 +192,17 @@ public class BuscaCaminho {
         }
     }
 
-    public void mutate(){
+    public void mutate(int chegada){
         Random r = new Random();
         for (int i = 0; i < 5; i++) {
             int l = r.nextInt(popInt.length-1)+1;
-            int c = r.nextInt(popInt[l].getTrajSize());
+            for (int j = 0; j < 3; j++) {
+                int c = r.nextInt(chegada);
 
-            switch (popInt[l].getCommand(c)) {
+                popInt[l].addCommand(c, r.nextInt(4));
+            }
+
+            /*switch (popInt[l].getCommand(c)) {
                 case 0:
                     popInt[l].addCommand(c, 1);
                     break;
@@ -193,7 +215,7 @@ public class BuscaCaminho {
                 case 3:
                     popInt[l].addCommand(c, 0);
                     break;
-            }
+            }*/
         }
     }
 

@@ -18,7 +18,7 @@ public class BuscaCaminho {
         this.percentMutation = percentMutation;
     }
 
-    public Agent buscaGenetica(int numeroAgentes, int geracoes){
+    public Agent buscaGenetica(int numeroAgentes, int geracoes, boolean print){
         pop = new Agent[numeroAgentes];
         popInt = new Agent[numeroAgentes];
         Random r = new Random();
@@ -47,7 +47,6 @@ public class BuscaCaminho {
                 }
                 else mutate(agentSize/2);
             }
-            calculateAllScore(popInt);
 
 
             //System.out.println("popInt:");
@@ -55,13 +54,15 @@ public class BuscaCaminho {
 
             pop = popInt.clone();
 
-            System.out.println("Geraçao:" + geracao);
+            if(print) {
+                System.out.println("Geraçao:" + geracao);
 
 
-            System.out.println("pop:");
-            System.out.println("Batida: " + pop[0].getBatida());
-            printAgents(pop);
-
+                System.out.println("pop:");
+                System.out.println("Batida: " + pop[0].getBatida());
+                printAgent(pop[0]);
+                System.out.println(" Score: " + pop[0].getScore());
+            }
 
             if(pop[0].isChegou() && !pop[0].isInvalido()){
                 break;
@@ -130,22 +131,33 @@ public class BuscaCaminho {
 
             }
             if(posX<0 || posX>=maze[0].length || posY<0 || posY>=maze.length){
-                score += agentSize*2;
+                score += 350;
                 agent.setInvalido(true);
+                if(agent.getBatida()== -1) agent.setBatida(i);
             } else if(maze[posY][posX] == 1){
-                score += agentSize;
+                score += 300;
                 agent.setInvalido(true);
                 if(agent.getBatida()== -1) agent.setBatida(i);
             } else if(maze[posY][posX] == 0 || maze[posY][posX] == 2){
                 if(agent.isInvalido()){
-                    score += agentSize;
+                    score += 300;
                 }else {
+                    if (i > 0) {
+                        if ((agent.getCommand(i) == 0 && agent.getCommand(i - 1) == 2) || (agent.getCommand(i) == 2 && agent.getCommand(i - 1) == 0)) {
+                            score += 10;
+                        } else if ((agent.getCommand(i) == 1 && agent.getCommand(i - 1) == 3) || (agent.getCommand(i) == 3 && agent.getCommand(i - 1) == 1)) {
+                            score += 10;
+                        }
+                    }
                     score += 1;
                 }
+
             } else{
-                agent.setChegou(true);
-                agent.setChegada(i);
-                break;
+                if(!agent.isInvalido()) {
+                    agent.setChegou(true);
+                    agent.setChegada(i);
+                    break;
+                }
             }
         }
 
@@ -194,7 +206,7 @@ public class BuscaCaminho {
             do{
                 dad = torneio();
                 mom = torneio();
-            }while(dad.equals(mom));
+            }while(dad.getTraj() == mom.getTraj());
             for (int j = 0; j < corte; j++) {
                 popInt[i].addCommand(j,dad.getCommand(j));
                 popInt[i+1].addCommand(j,mom.getCommand(j));
@@ -208,11 +220,10 @@ public class BuscaCaminho {
 
     public void mutate(int chegada){
         Random r = new Random();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < pop.length/2; i++) {
             int l = r.nextInt(popInt.length-1)+1;
-            for (int j = chegada; j < popInt[l].getTrajSize(); j++) {
-                popInt[l].addCommand(j, r.nextInt(4));
-            }
+            int j = r.nextInt(popInt[l].getTrajSize());
+            popInt[l].addCommand(j, r.nextInt(4));
 
 
             /*switch (popInt[l].getCommand(c)) {

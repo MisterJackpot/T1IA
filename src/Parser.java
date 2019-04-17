@@ -7,10 +7,25 @@ public class Parser {
 
         String st;
         int j = 0;
-        int[][] maze = new int[12][12];
+        int tam = Integer.parseInt(in.readLine());
+        int[][] maze = new int[tam][tam];
         while ((st = in.readLine()) != null) {
+            int l = 0;
             for(int i=0; i<st.length(); i++){
-                maze[j][i] = Character.getNumericValue(st.charAt(i));
+                Character aux = st.charAt(i);
+                if(aux == 'E'){
+                    maze[j][l] = 2;
+                    l++;
+                }else if(aux == 'S'){
+                    maze[j][l] = 3;
+                    l++;
+                }else if(aux == '0'){
+                    maze[j][l] = 0;
+                    l++;
+                } else if(aux == '1'){
+                    maze[j][l] = 1;
+                    l++;
+                }
             }
             j++;
         }

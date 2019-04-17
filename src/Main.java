@@ -6,7 +6,7 @@ public class Main {
     public static  int posy = 0;
 
     public static void main(String args[]){
-        File f = new File("assets/maza.txt");
+        File f = new File("assets/labirinto1_10.txt");
         Parser p = new Parser();
         try {
            int[][] maze =  p.parseFile(f);
@@ -25,16 +25,22 @@ public class Main {
 
             }
 
-            BuscaCaminho busca = new BuscaCaminho(maze,posx,posy, 10, 100,numberZeros*2);
+            BuscaCaminho busca = new BuscaCaminho(maze,posx,posy, numberZeros/2+2, 85,numberZeros+15);
 
-            Agent champ = new Agent(36);
+            Agent champ;
             do {
-                champ = busca.buscaGenetica(11, 1000000);
+                champ = busca.buscaGenetica(51, 300000, false);
                 System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 System.out.println("Champ:");
                 printAgent(champ);
                 System.out.println(" Score: " + champ.getScore());
                 System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+                /*int[][] aux = new int[10][10];
+                for (int i = 0; i < maze.length; i++) {
+                    aux[i] = maze[i].clone();
+                }
+                printSteps(champ,aux);*/
             }while(!verify(champ,maze));
 
             printSteps(champ,maze);

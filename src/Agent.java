@@ -71,4 +71,8 @@ public class Agent {
     public void setBatida(int batida) {
         this.batida = batida;
     }
+
+    public int[] getTraj(){
+        return traj;
+    }
 }

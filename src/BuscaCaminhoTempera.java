@@ -6,20 +6,131 @@ public class BuscaCaminhoTempera {
     private int[][] maze;
     private int posXIni, posYIni;
     private double temperatura;
+    private double k;
+    private Random r;
 
 
-    public BuscaCaminhoTempera(int[][] maze, int posX, int posY, int size){
+    public BuscaCaminhoTempera(int[][] maze, int posX, int posY, int size, double k){
         this.maze = maze;
         posXIni = posX;
         posYIni = posY;
         agentSize = size;
+        this.k = k;
+        r = new Random();
     }
 
-    public Agent buscaTempera(){
+    public Agent buscaTempera(int geracoes, double temp){
         agent = new Agent(agentSize);
         initAgent();
+        int dE;
+
+        for (int i = 0; i < geracoes; i++) {
+
+            temp = k * temp;
+
+            if(temp == 0) break;
+
+            Agent proxAgent = gerarAgent();
+
+            dE = funcaoAptidao(proxAgent) - funcaoAptidao(agent);
+
+            System.out.println("-_-_-_-_-_-_-_");
+            System.out.println("Geração: " + i);
+            System.out.println("Temperatura: " + temp);
+            System.out.println("dE: " + dE);
+            System.out.println("Batida: " + agent.getBatida());
+            printAgent(agent);
+            System.out.println(" Score: " + agent.getScore());
+            printAgent(proxAgent);
+            System.out.println(" Score: " + proxAgent.getScore());
+
+
+            if(dE < 0) agent.setTraj(proxAgent.getTraj());
+            else if(r.nextDouble() < Math.exp((-dE)/temp)) agent.setTraj(proxAgent.getTraj());
+        }
 
         return agent;
+    }
+
+    public static void printAgent(Agent a){
+        for (int i = 0; i < a.getTrajSize(); i++) {
+            System.out.print(a.getCommand(i));
+        }
+    }
+
+    private int funcaoAptidao(Agent test) {
+        int score = 0;
+        test.setScore(score);
+        test.setBatida(-1);
+        test.setInvalido(false);
+        int posX = posXIni;
+        int posY = posYIni;
+
+        for (int i = 0; i < test.getTrajSize(); i++) {
+            switch (test.getCommand(i)) {
+                case 0:
+                    posX--;
+                    break;
+                case 1:
+                    posY--;
+                    break;
+                case 2:
+                    posX++;
+                    break;
+                case 3:
+                    posY++;
+                    break;
+
+            }
+            if (posX < 0 || posX >= maze[0].length || posY < 0 || posY >= maze.length) {
+                score += 100;
+                test.setInvalido(true);
+                if(test.getBatida() == -1) test.setBatida(i);
+            } else if (maze[posY][posX] == 1) {
+                score += 50;
+                test.setInvalido(true);
+                if(test.getBatida() == -1) test.setBatida(i);
+            } else if (maze[posY][posX] == 0 || maze[posY][posX] == 2) {
+                if(test.isInvalido()){
+                    score += 100;
+                }else {
+                    if (i > 0) {
+                        if ((test.getCommand(i) == 0 && test.getCommand(i - 1) == 2) || (test.getCommand(i) == 2 && test.getCommand(i - 1) == 0)) {
+                            score += 10;
+                        } else if ((test.getCommand(i) == 1 && test.getCommand(i - 1) == 3) || (test.getCommand(i) == 3 && test.getCommand(i - 1) == 1)) {
+                            score += 10;
+                        }
+                    }
+                    score += 1;
+                }
+            } else if(maze[posY][posX] == 3){
+                break;
+            }
+        }
+
+        test.setScore(score);
+
+        return score;
+    }
+
+    private Agent gerarAgent() {
+        Agent aux = new Agent(agentSize);
+        aux.setTraj(agent.getTraj().clone());
+        int pos;
+        if(agent.getBatida() > 0){
+            pos = r.nextInt(agent.getBatida()+1);
+        }else {
+            pos = r.nextInt(agent.getTrajSize());
+        }
+        boolean saida = true;
+        do {
+            int command = r.nextInt(4);
+            if (aux.getCommand(pos) != command){
+                saida = false;
+                aux.addCommand(pos, command);
+            }
+        }while(saida);
+        return aux;
     }
 
     private void initAgent() {

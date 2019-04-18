@@ -75,4 +75,7 @@ public class Agent {
     public int[] getTraj(){
         return traj;
     }
+    public void setTraj(int[] traj){
+        this.traj = traj;
+    }
 }

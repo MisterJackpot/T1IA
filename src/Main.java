@@ -25,11 +25,12 @@ public class Main {
 
             }
 
-            BuscaCaminho busca = new BuscaCaminho(maze,posx,posy, numberZeros/2+2, 85,numberZeros+15);
-
+            //BuscaCaminho busca = new BuscaCaminho(maze,posx,posy, numberZeros/2+2, 85,numberZeros+15);
+            BuscaCaminhoTempera bt = new BuscaCaminhoTempera(maze,posx,posy,numberZeros+5,0.4);
             Agent champ;
             do {
-                champ = busca.buscaGenetica(51, 300000, false);
+                //champ = busca.buscaGenetica(51, 300000, false);
+                champ = bt.buscaTempera(1000000,1500);
                 System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 System.out.println("Champ:");
                 printAgent(champ);

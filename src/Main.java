@@ -37,7 +37,7 @@ public class Main {
 			Agent champ;
 			do {
 				// champ = busca.buscaGenetica(51, 300000, false);
-				champ = bt.buscaTempera(1000000, 1500);
+				champ = bt.buscaTempera(100000, 2500);
 				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 				System.out.println("Champ:");
 				printAgent(champ);
@@ -51,6 +51,9 @@ public class Main {
 			} while (!verify(champ, maze));
 
 			printSteps(champ, maze);
+
+			posxf = champ.getPos().posX;
+            posyf = champ.getPos().posY;
 
 			AEstrela aEstrela = new AEstrela(maze, posx, posy, posxf, posyf, maze.length);
 			aEstrela.findPath();

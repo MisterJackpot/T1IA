@@ -104,6 +104,10 @@ public class BuscaCaminhoTempera {
                     score += 1;
                 }
             } else if(maze[posY][posX] == 3){
+                Geo pos = new Geo();
+                pos.posX = posX;
+                pos.posY = posY;
+                test.setPos(pos);
                 break;
             }
         }

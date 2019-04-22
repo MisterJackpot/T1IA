@@ -6,6 +6,7 @@ public class Agent {
     private boolean chegou;
     private int chegada;
     private int batida;
+    private Geo pos;
 
     public Agent(int size){
         traj = new int[size];
@@ -77,5 +78,13 @@ public class Agent {
     }
     public void setTraj(int[] traj){
         this.traj = traj;
+    }
+
+    public Geo getPos() {
+        return pos;
+    }
+
+    public void setPos(Geo pos) {
+        this.pos = pos;
     }
 }

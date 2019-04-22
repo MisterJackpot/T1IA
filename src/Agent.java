@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Agent {
 
     private int[] traj;
@@ -7,10 +9,12 @@ public class Agent {
     private int chegada;
     private int batida;
     private Geo pos;
+    private ArrayList<Geo> posicoes;
 
     public Agent(int size){
         traj = new int[size];
         chegada = -1;
+        posicoes = new ArrayList<>();
     }
 
     public int getTrajSize(){
@@ -86,5 +90,13 @@ public class Agent {
 
     public void setPos(Geo pos) {
         this.pos = pos;
+    }
+
+    public ArrayList<Geo> getPosicoes() {
+        return posicoes;
+    }
+
+    public void setPosicoes(ArrayList<Geo> posicoes) {
+        this.posicoes = posicoes;
     }
 }

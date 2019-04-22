@@ -8,7 +8,7 @@ public class Main {
 	public static int posyf = 0;
 
 	public static void main(String args[]) {
-		File f = new File("assets/labirinto1_10.txt");
+		File f = new File("assets/labirinto2_10.txt");
 		Parser p = new Parser();
 		try {
 			int[][] maze = p.parseFile(f);
@@ -32,12 +32,12 @@ public class Main {
 			}
 			printMaze(maze);
 
-			BuscaCaminho busca = new BuscaCaminho(maze, posx, posy, numberZeros / 2 + 2, 85, numberZeros + 15);
-			BuscaCaminhoTempera bt = new BuscaCaminhoTempera(maze, posx, posy, numberZeros + 5, 0.4);
+			BuscaCaminho busca = new BuscaCaminho(maze, posx, posy, numberZeros / 2 + 4, 85, numberZeros);
+			BuscaCaminhoTempera bt = new BuscaCaminhoTempera(maze, posx, posy, numberZeros + 5, 0.6);
 			Agent champ;
 			do {
-				// champ = busca.buscaGenetica(51, 300000, false);
-				champ = bt.buscaTempera(100000, 2500);
+				champ = busca.buscaGenetica(41, 50000, true);
+				//champ = bt.buscaTempera(100000, 87000);
 				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 				System.out.println("Champ:");
 				printAgent(champ);
@@ -50,7 +50,13 @@ public class Main {
 				 */
 			} while (!verify(champ, maze));
 
-			printSteps(champ, maze);
+
+
+			 int[][] aux = new int[10][10]; for (int i = 0; i < maze.length; i++) {
+			 	aux[i] = maze[i].clone();
+			 }
+			 printSteps(champ,aux);
+
 
 			posxf = champ.getPos().posX;
             posyf = champ.getPos().posY;

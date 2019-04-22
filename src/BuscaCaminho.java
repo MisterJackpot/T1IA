@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Random;
 
 public class BuscaCaminho {
@@ -45,7 +46,7 @@ public class BuscaCaminho {
                 if(pop[0].getBatida() != -1){
                     mutate(pop[0].getBatida());
                 }
-                else mutate(agentSize/2);
+                else mutate(agentSize-1);
             }
 
 
@@ -60,8 +61,9 @@ public class BuscaCaminho {
 
                 System.out.println("pop:");
                 System.out.println("Batida: " + pop[0].getBatida());
-                printAgent(pop[0]);
                 System.out.println(" Score: " + pop[0].getScore());
+                printAgent(pop[0]);
+                System.out.println(" ");
             }
 
             if(pop[0].isChegou() && !pop[0].isInvalido()){
@@ -106,16 +108,17 @@ public class BuscaCaminho {
         }
     }
 
-    public void calculateScore(Agent agent){
+    private int calculateScore(Agent test) {
         int score = 0;
+        test.setScore(score);
+        test.setBatida(-1);
+        test.setInvalido(false);
         int posX = posXIni;
         int posY = posYIni;
-        agent.setInvalido(false);
-        agent.setChegou(false);
-        agent.setBatida(-1);
+        ArrayList<Geo> aux = test.getPosicoes();
 
-        for (int i = 0; i < agent.getTrajSize(); i++){
-            switch (agent.getCommand(i)){
+        for (int i = 0; i < test.getTrajSize(); i++) {
+            switch (test.getCommand(i)) {
                 case 0:
                     posX--;
                     break;
@@ -130,47 +133,56 @@ public class BuscaCaminho {
                     break;
 
             }
-            if(posX<0 || posX>=maze[0].length || posY<0 || posY>=maze.length){
-                score += 350;
-                agent.setInvalido(true);
-                if(agent.getBatida()== -1) agent.setBatida(i);
-            } else if(maze[posY][posX] == 1){
-                score += 300;
-                agent.setInvalido(true);
-                if(agent.getBatida()== -1) agent.setBatida(i);
-            } else if(maze[posY][posX] == 0 || maze[posY][posX] == 2){
-                if(agent.isInvalido()){
-                    score += 300;
+            if (posX < 0 || posX >= maze[0].length || posY < 0 || posY >= maze.length) {
+                score += 100;
+                test.setInvalido(true);
+                if(test.getBatida() == -1) test.setBatida(i);
+            } else if (maze[posY][posX] == 1) {
+                score += 50;
+                test.setInvalido(true);
+                if(test.getBatida() == -1) test.setBatida(i);
+            } else if (maze[posY][posX] == 0 || maze[posY][posX] == 2) {
+                if(test.isInvalido()){
+                    score += 100;
                 }else {
                     if (i > 0) {
-                        if ((agent.getCommand(i) == 0 && agent.getCommand(i - 1) == 2) || (agent.getCommand(i) == 2 && agent.getCommand(i - 1) == 0)) {
-                            score += 10;
-                        } else if ((agent.getCommand(i) == 1 && agent.getCommand(i - 1) == 3) || (agent.getCommand(i) == 3 && agent.getCommand(i - 1) == 1)) {
-                            score += 10;
+                        Geo dup = checkPos(aux,posX,posY);
+                        if(dup != null && dup.visitas > 2){
+                            score += (dup.visitas * 5);
                         }
                     }
                     score += 1;
                 }
-
-            } else{
-                if(!agent.isInvalido()) {
-                    agent.setChegou(true);
-                    agent.setChegada(i);
+            } else if(maze[posY][posX] == 3){
+                if(!test.isInvalido()) {
+                    Geo pos = new Geo();
+                    pos.posX = posX;
+                    pos.posY = posY;
+                    test.setPos(pos);
                     break;
                 }
             }
+
+            Geo pos = new Geo();
+            pos.posX = posX;
+            pos.posY = posY;
+            aux.add(pos);
         }
 
-        /*if(chegou > 0){
-            agent.sliceTraj(chegou);
-        }*/
+        test.setPosicoes(aux);
+        test.setScore(score);
 
-        if(agent.getBatida() != -1) {
-            agent.setScore(score / (agent.getBatida()+1));
-        }else{
-            agent.setScore(score/(agentSize*10));
+        return score;
+    }
+
+    private Geo checkPos(ArrayList<Geo> pos, int posX, int posY){
+        for (Geo g: pos) {
+            if(g.itsEqual(posX,posY)){
+                g.visitas += 1;
+                return g;
+            }
         }
-
+        return null;
     }
 
     public void getHighlander(){

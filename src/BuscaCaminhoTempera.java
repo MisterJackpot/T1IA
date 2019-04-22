@@ -1,3 +1,5 @@
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class BuscaCaminhoTempera {
@@ -65,6 +67,7 @@ public class BuscaCaminhoTempera {
         test.setInvalido(false);
         int posX = posXIni;
         int posY = posYIni;
+        ArrayList<Geo> aux = test.getPosicoes();
 
         for (int i = 0; i < test.getTrajSize(); i++) {
             switch (test.getCommand(i)) {
@@ -95,10 +98,9 @@ public class BuscaCaminhoTempera {
                     score += 100;
                 }else {
                     if (i > 0) {
-                        if ((test.getCommand(i) == 0 && test.getCommand(i - 1) == 2) || (test.getCommand(i) == 2 && test.getCommand(i - 1) == 0)) {
-                            score += 10;
-                        } else if ((test.getCommand(i) == 1 && test.getCommand(i - 1) == 3) || (test.getCommand(i) == 3 && test.getCommand(i - 1) == 1)) {
-                            score += 10;
+                        Geo dup = checkPos(aux,posX,posY);
+                        if(dup != null && dup.visitas > 2){
+                            score += 50;
                         }
                     }
                     score += 1;
@@ -110,19 +112,35 @@ public class BuscaCaminhoTempera {
                 test.setPos(pos);
                 break;
             }
+
+            Geo pos = new Geo();
+            pos.posX = posX;
+            pos.posY = posY;
+            aux.add(pos);
         }
 
+        test.setPosicoes(aux);
         test.setScore(score);
 
         return score;
+    }
+
+    private Geo checkPos(ArrayList<Geo> pos, int posX, int posY){
+        for (Geo g: pos) {
+            if(g.itsEqual(posX,posY)){
+                g.visitas += 1;
+                return g;
+            }
+        }
+        return null;
     }
 
     private Agent gerarAgent() {
         Agent aux = new Agent(agentSize);
         aux.setTraj(agent.getTraj().clone());
         int pos;
-        if(agent.getBatida() > 0){
-            pos = r.nextInt(agent.getBatida()+1);
+        if(agent.getBatida() >= 0){
+            pos = agent.getBatida();
         }else {
             pos = r.nextInt(agent.getTrajSize());
         }

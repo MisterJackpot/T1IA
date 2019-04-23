@@ -8,7 +8,7 @@ public class Main {
 	public static int posyf = 0;
 
 	public static void main(String args[]) {
-		File f = new File("assets/labirinto5_20.txt");
+		File f = new File("assets/labirinto2_10.txt");
 		Parser p = new Parser();
 		try {
 			int[][] maze = p.parseFile(f);
@@ -32,11 +32,11 @@ public class Main {
 			}
 			printMaze(maze);
 
-			BuscaCaminho busca = new BuscaCaminho(maze, posx, posy, numberZeros / 2 + 4, 85, numberZeros+10);
+			BuscaCaminho busca = new BuscaCaminho(maze, posx, posy, numberZeros / 2 + 4, 75, numberZeros+10);
 			BuscaCaminhoTempera bt = new BuscaCaminhoTempera(maze, posx, posy, numberZeros + 5, 0.75);
 			Agent champ;
 			do {
-				champ = busca.buscaGenetica(31, 550000, true);
+				champ = busca.buscaGenetica(21, 150000, true);
 				//champ = bt.buscaTempera(100000, 8705);
 				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 				System.out.println("Champ:");
@@ -86,7 +86,7 @@ public class Main {
 		int posY = posy;
 
 		for (int i = 0; i < agent.getTrajSize(); i++) {
-			maze[posY][posX] = 9;
+
 			switch (agent.getCommand(i)) {
 			case 0:
 				posX--;
@@ -102,18 +102,22 @@ public class Main {
 				break;
 			}
 
+			if (maze[posY][posX] == 3) {
+				System.out.println("WIN");
+				break;
+			}
+
 			System.out.println("_-_-__-_-__-_-__-_-__-_-__-_-__-_-__-_-__-_-__-_-__-_-_");
 			System.out.println("Passo: " + i);
+			maze[posY][posX] = 9;
 			printMaze(maze);
+			maze[posY][posX] = 8;
 			try {
 				Thread.sleep(1500);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			if (maze[posY][posX] == 3) {
-				System.out.println("WIN");
-				break;
-			}
+
 
 		}
 	}

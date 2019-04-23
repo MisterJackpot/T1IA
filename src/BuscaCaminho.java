@@ -39,10 +39,18 @@ public class BuscaCaminho {
             }
 
 
+
+
             calculateAllScore(pop);
+
+            if(geracao == geracoes && pop[0].getBatida() != -1){
+                geracoes += 10000;
+            }
 
             if(pop[0].getBatida() != -1 && pop[0].getBatida() > 2){
                 corte = pop[0].getBatida()/2;
+            }else{
+                corte = r.nextInt(agentSize);
             }
 
             if(print && geracao % 1000 == 0) {
@@ -144,23 +152,26 @@ public class BuscaCaminho {
 
             }
             if (posX < 0 || posX >= maze[0].length || posY < 0 || posY >= maze.length) {
-                score += 150;
+                score += 50;
                 test.setInvalido(true);
                 if(test.getBatida() == -1) test.setBatida(i);
             } else if (maze[posY][posX] == 1) {
-                score += 100;
+                score += 20;
                 test.setInvalido(true);
                 if(test.getBatida() == -1) test.setBatida(i);
             } else if (maze[posY][posX] == 0 || maze[posY][posX] == 2) {
                 if(test.isInvalido()){
-                    score += 100;
+                    score += 20;
                 }else {
                     if (i > 0) {
                         Geo dup = checkPos(aux,posX,posY);
-                        if(dup != null && dup.visitas > 2){
-                            score += (dup.visitas * 5);
+                        if(dup != null && dup.visitas > 0){
+                            score += (dup.visitas * 2);
                             aux.add(dup);
                         }else if(dup == null){
+                            if(score > 0){
+                                score--;
+                            }
                             Geo pos = new Geo();
                             pos.posX = posX;
                             pos.posY = posY;
@@ -169,7 +180,6 @@ public class BuscaCaminho {
                             aux.add(dup);
                         }
                     }
-                    score += 1;
                 }
             } else if(maze[posY][posX] == 3){
                 if(!test.isInvalido()) {

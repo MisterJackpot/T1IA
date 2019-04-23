@@ -195,7 +195,7 @@ public class BuscaCaminho {
                     pos.posX = posX;
                     pos.posY = posY;
                     test.setPos(pos);
-                    int left = test.getTrajSize() - i;
+                    int left = (test.getTrajSize() - i) * 2;
                     score -= left;
                     test.setChegada(i);
                     break;

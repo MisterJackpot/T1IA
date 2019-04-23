@@ -8,7 +8,7 @@ public class Main {
 	public static int posyf = 0;
 
 	public static void main(String args[]) {
-		File f = new File("assets/labirinto3_20.txt");
+		File f = new File("assets/labirinto4_20.txt");
 		Parser p = new Parser();
 		try {
 			int[][] maze = p.parseFile(f);
@@ -32,11 +32,11 @@ public class Main {
 			}
 			printMaze(maze);
 
-			BuscaCaminho busca = new BuscaCaminho(maze, posx, posy, numberZeros / 2 + 4, 85, numberZeros+15);
+			BuscaCaminho busca = new BuscaCaminho(maze, posx, posy, numberZeros / 2 + 4, 85, numberZeros+30);
 			BuscaCaminhoTempera bt = new BuscaCaminhoTempera(maze, posx, posy, numberZeros + 5, 0.75);
 			Agent champ;
 			do {
-				champ = busca.buscaGenetica(11, 250000, true);
+				champ = busca.buscaGenetica(21, 200000, true);
 				//champ = bt.buscaTempera(100000, 8705);
 				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 				System.out.println("Champ:");

@@ -46,7 +46,7 @@ public class BuscaCaminho {
 
 
             if(pop[0].getBatida() != -1 && pop[0].getBatida() > 2){
-                corte = pop[0].getBatida()/2;
+                corte = r.nextInt(pop[0].getBatida());
             }else{
                 corte = r.nextInt(agentSize);
             }
@@ -61,6 +61,7 @@ public class BuscaCaminho {
 
 
                 System.out.println("Batida: " + pop[0].getBatida());
+                System.out.println("Chegada: " + pop[0].getChegada());
                 System.out.println(" Score: " + pop[0].getScore());
                 System.out.println(" ");
                 printAgents(pop);
@@ -142,6 +143,7 @@ public class BuscaCaminho {
         int posX = posXIni;
         int posY = posYIni;
         ArrayList<Geo> aux = new ArrayList<>();
+        test.setChegada(-1);
 
         for (int i = 0; i < test.getTrajSize(); i++) {
             switch (test.getCommand(i)) {
@@ -195,6 +197,7 @@ public class BuscaCaminho {
                     test.setPos(pos);
                     int left = test.getTrajSize() - i;
                     score -= left;
+                    test.setChegada(i);
                     break;
                 }
             }
@@ -203,7 +206,7 @@ public class BuscaCaminho {
         }
 
         test.setPosicoes(aux);
-        if(score < 0) score = 0;
+        //if(score < 0) score = 0;
         test.setScore(score);
 
         return score;

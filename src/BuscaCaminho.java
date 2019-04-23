@@ -41,7 +41,11 @@ public class BuscaCaminho {
 
             calculateAllScore(pop);
 
-            if(print) {
+            if(pop[0].getBatida() != -1 && pop[0].getBatida() > 2){
+                corte = pop[0].getBatida()/2;
+            }
+
+            if(print && geracao % 1000 == 0) {
                 System.out.println("Geraçao:" + geracao);
 
 
@@ -154,7 +158,7 @@ public class BuscaCaminho {
                     if (i > 0) {
                         Geo dup = checkPos(aux,posX,posY);
                         if(dup != null && dup.visitas > 2){
-                            score += (dup.visitas * 3);
+                            score += (dup.visitas * 5);
                             aux.add(dup);
                         }else if(dup == null){
                             Geo pos = new Geo();
@@ -249,8 +253,13 @@ public class BuscaCaminho {
         for (int i = 0; i < pop.length/2; i++) {
             int l = r.nextInt(popInt.length-1)+1;
             int j = r.nextInt(popInt[l].getTrajSize());
-            popInt[l].addCommand(j, r.nextInt(4));
-
+            if(i == 0){
+                for (int k = 0; k < popInt[l].getTrajSize(); k++) {
+                    popInt[l].addCommand(k,r.nextInt(4));
+                }
+            }else {
+                popInt[l].addCommand(j, r.nextInt(4));
+            }
 
 
             /*switch (popInt[l].getCommand(c)) {

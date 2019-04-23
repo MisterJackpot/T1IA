@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 public class BuscaCaminho {
@@ -43,9 +44,6 @@ public class BuscaCaminho {
 
             calculateAllScore(pop);
 
-            if(geracao == geracoes && pop[0].getBatida() != -1){
-                geracoes += 10000;
-            }
 
             if(pop[0].getBatida() != -1 && pop[0].getBatida() > 2){
                 corte = pop[0].getBatida()/2;
@@ -53,25 +51,35 @@ public class BuscaCaminho {
                 corte = r.nextInt(agentSize);
             }
 
-            if(print && geracao % 1000 == 0) {
+            if(geracao%1000 == 0){
+                print = true;
+            }else{
+                print = false;
+            }
+            if(print) {
                 System.out.println("Geraçao:" + geracao);
 
 
-                System.out.println("pop:");
                 System.out.println("Batida: " + pop[0].getBatida());
                 System.out.println(" Score: " + pop[0].getScore());
-                printAgent(pop[0]);
                 System.out.println(" ");
+                printAgents(pop);
+                System.out.println(" ");
+                try {
+                    Thread.sleep(1500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
 
             getHighlander();
             crossOver();
 
             if(r.nextInt(101) < percentMutation) {
-                if(pop[0].getBatida() != -1){
+                if(pop[0].getBatida() > 0){
                     mutate(pop[0].getBatida());
                 }
-                else mutate(agentSize-1);
+                else mutate(agentSize);
             }
 
 
@@ -169,9 +177,7 @@ public class BuscaCaminho {
                             score += (dup.visitas * 2);
                             aux.add(dup);
                         }else if(dup == null){
-                            if(score > 0){
-                                score--;
-                            }
+                            score--;
                             Geo pos = new Geo();
                             pos.posX = posX;
                             pos.posY = posY;
@@ -187,6 +193,8 @@ public class BuscaCaminho {
                     pos.posX = posX;
                     pos.posY = posY;
                     test.setPos(pos);
+                    int left = test.getTrajSize() - i;
+                    score -= left;
                     break;
                 }
             }
@@ -195,6 +203,7 @@ public class BuscaCaminho {
         }
 
         test.setPosicoes(aux);
+        if(score < 0) score = 0;
         test.setScore(score);
 
         return score;
@@ -246,7 +255,7 @@ public class BuscaCaminho {
             do{
                 dad = torneio();
                 mom = torneio();
-            }while(dad.getTraj() == mom.getTraj());
+            }while(Arrays.equals(dad.getTraj(),mom.getTraj()));
             for (int j = 0; j < corte; j++) {
                 popInt[i].addCommand(j,dad.getCommand(j));
                 popInt[i+1].addCommand(j,mom.getCommand(j));
@@ -260,10 +269,10 @@ public class BuscaCaminho {
 
     public void mutate(int chegada){
         Random r = new Random();
-        for (int i = 0; i < pop.length/2; i++) {
+        for (int i = 0; i < pop.length/3; i++) {
             int l = r.nextInt(popInt.length-1)+1;
-            int j = r.nextInt(popInt[l].getTrajSize());
-            if(i == 0){
+            int j = r.nextInt(chegada);
+            if(i == 0 || i == 1){
                 for (int k = 0; k < popInt[l].getTrajSize(); k++) {
                     popInt[l].addCommand(k,r.nextInt(4));
                 }

@@ -31,18 +31,20 @@ public class Main {
 
 			}
 			printMaze(maze);
-			
-			BuscaCaminho busca = new BuscaCaminho(maze, posx, posy, numberZeros / 2 + 4, 85, numberZeros);
-			BuscaCaminhoTempera bt = new BuscaCaminhoTempera(maze, posx, posy, numberZeros + 5, 0.6);
+
+			BuscaCaminho busca = new BuscaCaminho(maze, posx, posy, numberZeros / 2 + 4, 85, numberZeros+10);
+			BuscaCaminhoTempera bt = new BuscaCaminhoTempera(maze, posx, posy, numberZeros + 5, 0.75);
 			Agent champ;
 			do {
-				champ = busca.buscaGenetica(41, 50000, true);
-				//champ = bt.buscaTempera(100000, 87000);
+				champ = busca.buscaGenetica(31, 550000, true);
+				//champ = bt.buscaTempera(100000, 8705);
 				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 				System.out.println("Champ:");
 				printAgent(champ);
 				System.out.println(" Score: " + champ.getScore());
 				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+				Thread.sleep(1500);
 
 				/*
 				 * int[][] aux = new int[10][10]; for (int i = 0; i < maze.length; i++) { aux[i]
@@ -52,7 +54,8 @@ public class Main {
 
 
 
-			 int[][] aux = new int[10][10]; for (int i = 0; i < maze.length; i++) {
+			 int[][] aux = new int[maze.length][maze.length];
+			 for (int i = 0; i < maze.length; i++) {
 			 	aux[i] = maze[i].clone();
 			 }
 			 printSteps(champ,aux);

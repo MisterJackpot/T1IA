@@ -31,6 +31,8 @@ public class BuscaCaminho {
         printAgents(pop);
         System.out.println("______________________________________________");*/
 
+
+
         for (int geracao = 0; geracao <= geracoes; geracao++) {
             for (int i = 0; i < popInt.length; i++) {
                 popInt[i] = new Agent(agentSize);
@@ -38,6 +40,17 @@ public class BuscaCaminho {
 
 
             calculateAllScore(pop);
+
+            if(print) {
+                System.out.println("Geraçao:" + geracao);
+
+
+                System.out.println("pop:");
+                System.out.println("Batida: " + pop[0].getBatida());
+                System.out.println(" Score: " + pop[0].getScore());
+                printAgent(pop[0]);
+                System.out.println(" ");
+            }
 
             getHighlander();
             crossOver();
@@ -53,24 +66,17 @@ public class BuscaCaminho {
             //System.out.println("popInt:");
             //printAgents(popInt);
 
-            pop = popInt.clone();
 
-            if(print) {
-                System.out.println("Geraçao:" + geracao);
-
-
-                System.out.println("pop:");
-                System.out.println("Batida: " + pop[0].getBatida());
-                System.out.println(" Score: " + pop[0].getScore());
-                printAgent(pop[0]);
-                System.out.println(" ");
+            for (int i = 0; i < pop.length; i++) {
+                pop[i] = popInt[i];
             }
 
-            if(pop[0].isChegou() && !pop[0].isInvalido()){
-                break;
-            }
+
+
+
         }
 
+        calculateScore(pop[0]);
         return pop[0];
     }
 
@@ -115,7 +121,7 @@ public class BuscaCaminho {
         test.setInvalido(false);
         int posX = posXIni;
         int posY = posYIni;
-        ArrayList<Geo> aux = test.getPosicoes();
+        ArrayList<Geo> aux = new ArrayList<>();
 
         for (int i = 0; i < test.getTrajSize(); i++) {
             switch (test.getCommand(i)) {
@@ -134,11 +140,11 @@ public class BuscaCaminho {
 
             }
             if (posX < 0 || posX >= maze[0].length || posY < 0 || posY >= maze.length) {
-                score += 100;
+                score += 150;
                 test.setInvalido(true);
                 if(test.getBatida() == -1) test.setBatida(i);
             } else if (maze[posY][posX] == 1) {
-                score += 50;
+                score += 100;
                 test.setInvalido(true);
                 if(test.getBatida() == -1) test.setBatida(i);
             } else if (maze[posY][posX] == 0 || maze[posY][posX] == 2) {
@@ -148,7 +154,15 @@ public class BuscaCaminho {
                     if (i > 0) {
                         Geo dup = checkPos(aux,posX,posY);
                         if(dup != null && dup.visitas > 2){
-                            score += (dup.visitas * 5);
+                            score += (dup.visitas * 3);
+                            aux.add(dup);
+                        }else if(dup == null){
+                            Geo pos = new Geo();
+                            pos.posX = posX;
+                            pos.posY = posY;
+                            aux.add(pos);
+                        } else{
+                            aux.add(dup);
                         }
                     }
                     score += 1;
@@ -163,10 +177,7 @@ public class BuscaCaminho {
                 }
             }
 
-            Geo pos = new Geo();
-            pos.posX = posX;
-            pos.posY = posY;
-            aux.add(pos);
+
         }
 
         test.setPosicoes(aux);
@@ -197,7 +208,7 @@ public class BuscaCaminho {
         }
 
         for(int i = 0; i < pop[highlander].getTrajSize(); i++){
-            popInt[0] = pop[highlander];
+            popInt[0].addCommand(i,pop[highlander].getCommand(i));
         }
     }
 
@@ -239,6 +250,7 @@ public class BuscaCaminho {
             int l = r.nextInt(popInt.length-1)+1;
             int j = r.nextInt(popInt[l].getTrajSize());
             popInt[l].addCommand(j, r.nextInt(4));
+
 
 
             /*switch (popInt[l].getCommand(c)) {

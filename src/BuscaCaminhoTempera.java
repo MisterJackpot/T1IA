@@ -67,7 +67,7 @@ public class BuscaCaminhoTempera {
         test.setInvalido(false);
         int posX = posXIni;
         int posY = posYIni;
-        ArrayList<Geo> aux = test.getPosicoes();
+        ArrayList<Geo> aux = new ArrayList<>();
 
         for (int i = 0; i < test.getTrajSize(); i++) {
             switch (test.getCommand(i)) {
@@ -100,17 +100,19 @@ public class BuscaCaminhoTempera {
                     if (i > 0) {
                         Geo dup = checkPos(aux,posX,posY);
                         if(dup != null && dup.visitas > 2){
-                            score += 50;
+                            score += (dup.visitas * 5);
                         }
                     }
                     score += 1;
                 }
             } else if(maze[posY][posX] == 3){
-                Geo pos = new Geo();
-                pos.posX = posX;
-                pos.posY = posY;
-                test.setPos(pos);
-                break;
+                if(!test.isInvalido()) {
+                    Geo pos = new Geo();
+                    pos.posX = posX;
+                    pos.posY = posY;
+                    test.setPos(pos);
+                    break;
+                }
             }
 
             Geo pos = new Geo();
@@ -140,7 +142,7 @@ public class BuscaCaminhoTempera {
         aux.setTraj(agent.getTraj().clone());
         int pos;
         if(agent.getBatida() >= 0){
-            pos = agent.getBatida();
+            pos = r.nextInt(agent.getBatida()+1);
         }else {
             pos = r.nextInt(agent.getTrajSize());
         }

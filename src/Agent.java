@@ -99,4 +99,11 @@ public class Agent {
     public void setPosicoes(ArrayList<Geo> posicoes) {
         this.posicoes = posicoes;
     }
+
+    public void zerar(){
+        this.invalido = false;
+        this.score = 0;
+        this.chegou = false;
+        this.batida = -1;
+    }
 }

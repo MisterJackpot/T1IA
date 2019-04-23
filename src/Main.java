@@ -8,7 +8,7 @@ public class Main {
 	public static int posyf = 0;
 
 	public static void main(String args[]) {
-		File f = new File("assets/labirinto2_10.txt");
+		File f = new File("assets/labirinto5_20.txt");
 		Parser p = new Parser();
 		try {
 			int[][] maze = p.parseFile(f);
@@ -31,7 +31,7 @@ public class Main {
 
 			}
 			printMaze(maze);
-
+			
 			BuscaCaminho busca = new BuscaCaminho(maze, posx, posy, numberZeros / 2 + 4, 85, numberZeros);
 			BuscaCaminhoTempera bt = new BuscaCaminhoTempera(maze, posx, posy, numberZeros + 5, 0.6);
 			Agent champ;
@@ -62,7 +62,7 @@ public class Main {
             posyf = champ.getPos().posY;
 
 			AEstrela aEstrela = new AEstrela(maze, posx, posy, posxf, posyf, maze.length);
-			aEstrela.findPath();
+			aEstrela.executa();
 			aEstrela.printMazeWithShortestPath();
 
 		} catch (IOException e) {
